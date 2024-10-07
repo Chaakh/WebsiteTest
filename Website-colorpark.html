@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Case Design Service</title>
+    <style>
+        /* ... (Your existing CSS) ... */
+    </style>
+</head>
+<body>
+    <div id="login-container">
+        <div class="login-form">
+            <h2>Login to Access Design Service</h2>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="text" id="order-number" placeholder="Order Number" required>
+            <button onclick="authenticate()">Access Design Service</button>
+        </div>
+    </div>
+    <div id="iframe-container">
+        <iframe src="https://h5.colorpark.cn/#/pages/index/detailsphone?machine_id=1123146" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        async function authenticate() {
+            const email = document.getElementById('email').value;
+            const orderNumber = document.getElementById('order-number').value;
+            
+            try {
+                const response = await fetch('/.netlify/functions/auth', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, orderNumber }),
+                });
+
+                const data = await response.json();
+
+                if (data.authenticated) {
+                    localStorage.setItem('authenticated', 'true');
+                    showIframe();
+                } else {
+                    alert('Invalid email or order number.');
+                }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                alert('An error occurred during authentication. Please try again.');
+            }
+        }
+
+        function showIframe() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('iframe-container').style.display = 'block';
+        }
+
+        // Check authentication state on page load
+        window.onload = function() {
+            if (localStorage.getItem('authenticated') === 'true') {
+                showIframe();
+            }
+        };
+    </script>
+</body>
+</html>
